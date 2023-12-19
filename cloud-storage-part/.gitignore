@@ -1,0 +1,6 @@
+.idea
+.gradle
+build
+server/build
+client/build
+common/build

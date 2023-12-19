@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.TextField?>
+<VBox fx:id="myVBox" alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.module.client.ControllerAuthorization">
+    <MenuBar>
+        <Menu text="Program">
+            <MenuItem text="Exit" onAction="#endSession"/>
+        </Menu>
+    </MenuBar>
+    <TextArea fx:id="textAreaAuthorization" editable="false" VBox.vgrow="ALWAYS"/>
+    <HBox>
+        <TextField fx:id="textLogin" HBox.hgrow="ALWAYS" promptText="Enter login..."/>
+        <TextField fx:id="textPassword" HBox.hgrow="ALWAYS" promptText="Enter password..."/>
+        <Button text="Send" onAction="#sendMessage"/>
+    </HBox>
+</VBox>

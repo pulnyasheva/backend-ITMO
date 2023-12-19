@@ -1,0 +1,4 @@
+rootProject.name = 'cloud-storage-part-1-hw-3-pulnyasheva'
+include 'client'
+include 'server'
+include 'common'
