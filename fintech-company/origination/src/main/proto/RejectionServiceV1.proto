@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package com.academy.fintech.rejection;
+
+option java_multiple_files = true;
+
+service RejectService{
+  rpc Reject (RejectRequest) returns (RejectResponse) {}
+}
+
+message RejectRequest{
+  string applicationId = 1;
+}
+
+message RejectResponse{
+  bool isReject = 1;
+}

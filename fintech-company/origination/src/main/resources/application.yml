@@ -1,0 +1,32 @@
+server:
+  port: 8084
+
+grpc:
+  port: 9094
+  enable-reflection: true
+
+spring:
+  liquibase:
+    change-log: classpath:/db/db.changelog-master.yaml
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/origination}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+  mail:
+    port: 587
+    host: smtp.gmail.com
+    username: user@gmail.com
+    password: password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+origination:
+  client:
+    scoring:
+      grpc:
+        host: localhost
+        port: 9092

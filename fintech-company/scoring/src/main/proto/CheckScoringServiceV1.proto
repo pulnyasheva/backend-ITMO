@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package com.academy.fintech.check_scoring;
+
+option java_multiple_files = true;
+
+service CheckScoringService {
+  rpc scoring (CheckScoringRequest) returns (CheckScoringResponse);
+}
+
+message CheckScoringRequest {
+  string clientId = 1;
+  int32 clientSalary = 2;
+  int32 loanTerm = 3;
+  int32 disbursementAmount = 4;
+  string interest = 5;
+}
+
+message CheckScoringResponse {
+  int32 score = 1;
+}

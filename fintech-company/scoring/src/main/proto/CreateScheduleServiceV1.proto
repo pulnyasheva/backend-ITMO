@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package com.academy.fintech.create_schedule;
+
+option java_multiple_files = true;
+
+service CreateScheduleService {
+  rpc create (CreateScheduleRequest) returns (CreateScheduleResponse);
+}
+
+message CreateScheduleRequest {
+  int32 loanTerm = 1;
+  string disbursementAmount = 2;
+  string interest = 3;
+}
+
+message CreateScheduleResponse {
+  string periodPayment = 1;
+}

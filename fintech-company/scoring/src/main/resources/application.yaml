@@ -1,0 +1,13 @@
+server:
+  port: 8082
+
+grpc:
+  port: 9092
+  enable-reflection: true
+
+scoring:
+  client:
+    pe:
+      grpc:
+        host: localhost
+        port: 9090

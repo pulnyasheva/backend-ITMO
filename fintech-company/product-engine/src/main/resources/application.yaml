@@ -1,0 +1,14 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+grpc:
+  port: ${GRPC_PORT:9090}
+  enable-reflection: true
+
+spring:
+  liquibase:
+    change-log: classpath:/db/db.changelog-master.yaml
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5431/pe}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}

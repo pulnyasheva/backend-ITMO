@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package com.academy.fintech.overdue_payment;
+
+option java_multiple_files = true;
+
+service OverduePaymentService {
+  rpc getOverduePayments (OverduePaymentRequest) returns (OverduePaymentResponse);
+}
+
+message OverduePaymentRequest {
+  string clientId = 1;
+}
+
+message OverduePaymentResponse {
+  repeated Date overdueDates = 1;
+}
+
+message Date{
+  int32 day = 1;
+  int32 month = 2;
+  int32 year = 3;
+}
