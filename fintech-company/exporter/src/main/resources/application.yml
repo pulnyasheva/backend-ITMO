@@ -1,0 +1,50 @@
+server:
+  port: ${SERVER_PORT:8087}
+
+grpc:
+  port: ${GRPC_PORT:9097}
+  enable-reflection: true
+
+spring:
+  liquibase:
+    change-log: classpath:/db/db.changelog-master.yaml
+    url: ${DB_URL:jdbc:postgresql://localhost:5435/exporter}
+    user: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+  datasource:
+    exporter:
+      jdbcUrl: ${DB_URL:jdbc:postgresql://localhost:5435/exporter}
+      username: ${DB_USERNAME:postgres}
+      password: ${DB_PASSWORD:postgres}
+      driver-class-name: org.postgresql.Driver
+    agreement:
+      jdbcUrl: ${AGREEMENT_DB_URL:jdbc:postgresql://localhost:5431/pe}
+      username: ${AGREEMENT_DB_USERNAME:postgres}
+      password: ${AGREEMENT_DB_PASSWORD:postgres}
+      driver-class-name: org.postgresql.Driver
+    application:
+      jdbcUrl: ${APPLICATION_DB_URL:jdbc:postgresql://localhost:5432/origination}
+      username: ${APPLICATION_DB_USERNAME:postgres}
+      password: ${APPLICATION_DB_PASSWORD:postgres}
+      driver-class-name: org.postgresql.Driver
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST}:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      enable-auto-commit: true
+      auto-offset-reset: earliest
+
+kafka:
+  exporter:
+    agreement:
+      topic: "v1.agreement"
+    application:
+      topic: "v1.application"
+    dispatcher:
+      stalled-seconds-rate: 900 # 15 minutes
+      export-seconds-rate: 1
+      retry-stalled:
+        passed-minutes-in-processing-to-retry: 15

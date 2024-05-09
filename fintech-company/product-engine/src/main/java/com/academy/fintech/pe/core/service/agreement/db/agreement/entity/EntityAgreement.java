@@ -71,5 +71,7 @@ public class EntityAgreement {
     @Column(name = "next_payment_date")
     private LocalDate nextPaymentDate;
 
+    @Column(name = "updated_at")
+    private LocalDate updatedAt;
 }
 

@@ -1,0 +1,25 @@
+spring:
+  liquibase:
+    change-log: classpath:/db/db.changelog-master.yaml
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/dwh}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST}:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+
+kafka:
+  consumer:
+    agreement:
+      topic: "v1.agreement"
+      group: "raw.agreement"
+    application:
+      topic: "v1.application"
+      group: "raw.application"

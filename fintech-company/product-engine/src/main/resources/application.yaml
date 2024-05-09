@@ -12,3 +12,10 @@ spring:
     url: ${DB_URL:jdbc:postgresql://localhost:5431/pe}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
+
+exporter:
+  client:
+    export:
+      grpc:
+        host: localhost
+        port: 9097

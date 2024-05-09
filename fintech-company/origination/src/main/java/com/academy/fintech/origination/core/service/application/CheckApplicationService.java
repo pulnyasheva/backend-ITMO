@@ -1,6 +1,8 @@
 package com.academy.fintech.origination.core.service.application;
 
-import com.academy.fintech.origination.core.scoring.client.ScoringClientService;
+import com.academy.fintech.origination.core.service.agreement.CreationAgreementResult;
+import com.academy.fintech.origination.core.service.agreement.CreationAgreementService;
+import com.academy.fintech.origination.core.service.disbursement.DisbursementService;
 import com.academy.fintech.origination.core.service.application.db.application.ApplicationService;
 import com.academy.fintech.origination.core.service.application.db.client.ClientService;
 import jakarta.transaction.Transactional;
@@ -9,10 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -21,9 +21,10 @@ public class CheckApplicationService {
     private final int DELAY = 10000;
     private final ApplicationService applicationService;
     private final CheckScoringApplicationService checkScoringApplicationService;
-
     private final ClientService clientService;
     private final EmailService emailService;
+    private final CreationAgreementService creationAgreementService;
+    private final DisbursementService issuanceService;
 
 
     @Scheduled(fixedDelay = DELAY)
@@ -36,7 +37,11 @@ public class CheckApplicationService {
 
             try {
                 ApplicationStatus status = checkScoringApplicationService.checkApplication(application);
-                emailService.sendEmailForStatus(clientService.get(application.clientId()).get().email(), status);
+                CreationAgreementResult response = creationAgreementService.create(application, status);
+                emailService.sendEmailForStatus(clientService.get(application.clientId()).get().email(), response);
+                if (response.created()) {
+                    issuanceService.issue(application, response.agreementId());
+                }
             } catch (NoSuchElementException e) {
                 log.error(e.getMessage());
             }

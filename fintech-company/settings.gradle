@@ -5,4 +5,7 @@ include 'payment-gate'
 include 'api'
 include 'origination'
 include 'scoring'
+include 'merchant-provider'
+include 'exporter'
+include 'dwh'
 

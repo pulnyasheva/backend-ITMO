@@ -44,9 +44,9 @@ public class PaymentService {
             // Получение первой даты просрочки
             LocalDate overdueDate = null;
             for (SchedulePayment schedulePayment : schedulePastVersion.schedulePayments()) {
-                if (schedulePayment.status().equals(PaymentStatus.OVERDUE)
-                        && (overdueDate == null || overdueDate.isAfter(schedulePayment.paymentDate()))) {
-                    overdueDate = schedulePayment.paymentDate();
+                if (schedulePayment.getStatus().equals(PaymentStatus.OVERDUE)
+                        && (overdueDate == null || overdueDate.isAfter(schedulePayment.getPaymentDate()))) {
+                    overdueDate = schedulePayment.getPaymentDate();
                 }
             }
 

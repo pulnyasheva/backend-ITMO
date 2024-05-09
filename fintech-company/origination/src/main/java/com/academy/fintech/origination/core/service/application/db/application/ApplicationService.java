@@ -3,10 +3,12 @@ package com.academy.fintech.origination.core.service.application.db.application;
 import com.academy.fintech.origination.core.service.application.Application;
 import com.academy.fintech.origination.core.service.application.ApplicationStatus;
 import com.academy.fintech.origination.core.service.application.db.application.entity.EntityApplication;
+import com.academy.fintech.origination.core.service.export.ExportService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +18,12 @@ import java.util.Optional;
 public class ApplicationService {
 
     final private ApplicationRepository applicationRepository;
+    final private ExportService exportService;
 
     public String add(Application application) {
-        return applicationRepository.save(mapApplicationToEntity(application)).getId();
+        EntityApplication entityApplication = mapApplicationToEntity(application);
+        entityApplication.setUpdatedAt(LocalDate.now());
+        return applicationRepository.save(entityApplication).getId();
     }
 
     /**
@@ -43,12 +48,17 @@ public class ApplicationService {
         return applications;
     }
 
+    /**
+     * Метод обновляет статус и создает задачу для выгрузки в kafka
+     */
     @Transactional
     public boolean updateStatus(String applicationId, ApplicationStatus newStatus) {
         Optional<EntityApplication> application = applicationRepository.findById(applicationId);
         if (application.isPresent()) {
             application.get().setStatus(newStatus);
+            application.get().setUpdatedAt(LocalDate.now());
             applicationRepository.save(application.get());
+            exportService.createTask(mapEntityToApplication(application.get()));
             return true;
         }
         return false;

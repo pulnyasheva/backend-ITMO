@@ -1,0 +1,20 @@
+plugins {
+    id 'org.springframework.boot' version '3.1.4'
+}
+jar {
+    enabled = false
+}
+dependencies {
+    implementation libs.javax.annotation
+    implementation libs.spring.kafka
+    implementation libs.jackson.databind
+    implementation libs.spring.actuator
+
+    implementation libs.liquibase
+    implementation libs.spring.jpa
+    implementation libs.hibernate
+    implementation libs.postgresql.driver
+
+    compileOnly libs.spring.context.indexer
+    annotationProcessor libs.spring.context.indexer
+}

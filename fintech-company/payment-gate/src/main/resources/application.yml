@@ -1,0 +1,37 @@
+server:
+  port: 8086
+
+grpc:
+  port: 9096
+  enable-reflection: true
+
+spring:
+  liquibase:
+    change-log: classpath:/db/db.changelog-master.yaml
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5431/pg}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+
+product-engine:
+  client:
+    processing:
+      grpc:
+        host: localhost
+        port: 9090
+
+origination:
+  client:
+    activate:
+      grpc:
+        host: localhost
+        port: 9094
+
+merchant-provider:
+  client:
+    disbursement:
+      rest:
+        url: http://localhost:8087/merchant-provider/issuence
+    check-disbursement:
+      rest:
+        url: http://localhost:8087/merchant-provider/check_issuence

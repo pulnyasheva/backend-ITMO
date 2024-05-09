@@ -1,0 +1,8 @@
+
+dependencies {
+    implementation libs.javax.annotation
+
+    testImplementation libs.mockito
+    testImplementation libs.jupiter
+    testImplementation libs.spring.test
+}

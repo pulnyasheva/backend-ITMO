@@ -1,7 +1,7 @@
 package com.academy.fintech.origination.core.service.application;
 
+import com.academy.fintech.origination.core.service.agreement.CreationAgreementResult;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +19,14 @@ public class EmailService {
 //        mailSender.send(mailMessage);
     }
 
-    public void sendEmailForStatus(String email, ApplicationStatus status) {
+    public void sendEmailForStatus(String email, CreationAgreementResult result) {
         String subject = "Результат заявки на кредит";
-        String text = "Ваша заявка на кредит была " + status.name();
+        String text;
+        if (result.created()) {
+            text = "Ваша заявка на кредит была одобрена, номер вашего договора: " + result.agreementId();
+        } else {
+            text = "Ваша заявка на кредит была отклонена";
+        }
         sendEmail(email, subject, text);
     }
 }

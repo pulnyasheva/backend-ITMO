@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package com.academy.fintech.disbursement_processor;
+
+option java_multiple_files = true;
+
+service DisbursementProcessorService {
+  rpc disburse (DisbursementProcessorRequest) returns (DisbursementProcessorResponse);
+}
+
+message DisbursementProcessorRequest {
+  string clientEmail = 1;
+  string agreementId = 2;
+  int32 amountDisbursement = 3;
+}
+
+message DisbursementProcessorResponse {
+  bool accepted = 1;
+}

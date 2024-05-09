@@ -8,6 +8,9 @@ jar {
 dependencies {
     implementation libs.spring.grpc
     implementation libs.javax.annotation
+    implementation libs.spring.kafka
+    implementation libs.jackson.databind
+    implementation libs.spring.actuator
 
     implementation libs.protobuf.java.util
     implementation libs.grpc.protobuf
@@ -25,6 +28,9 @@ dependencies {
     testImplementation libs.testcontainers.core
     testImplementation libs.testcontainers.postgresql
     testImplementation libs.testcontainers.jupiter
+
+    compileOnly libs.spring.context.indexer
+    annotationProcessor libs.spring.context.indexer
 }
 
 protobuf {

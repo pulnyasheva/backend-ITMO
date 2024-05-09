@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ScheduleRepository extends JpaRepository<EntitySchedule, String> {
     List<EntitySchedule> findByAgreementId(String agreementId);
+
+    EntitySchedule findFirstByAgreementIdOrderByVersionDesc(String agreementId);
 }

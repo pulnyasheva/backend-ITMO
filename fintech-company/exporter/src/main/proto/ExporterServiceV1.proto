@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package com.academy.fintech.exporter;
+
+option java_multiple_files = true;
+
+service ExporterService {
+  rpc createTask(ExporterRequest) returns (ExporterResponse) {}
+}
+
+message ExporterRequest {
+  string type = 1;
+  string stringKey = 2;
+  string numberKey = 3;
+}
+
+message ExporterResponse {
+  bool accepted = 1;
+}

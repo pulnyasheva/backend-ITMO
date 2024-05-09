@@ -1,10 +1,12 @@
 package com.academy.fintech.pe.core.service.agreement.db.payment_schedule;
 
+import com.academy.fintech.pe.core.service.agreement.PaymentStatus;
 import com.academy.fintech.pe.core.service.agreement.Schedule;
 import com.academy.fintech.pe.core.service.agreement.SchedulePayment;
 import com.academy.fintech.pe.core.service.agreement.db.payment_schedule.entity.EntitySchedule;
 import com.academy.fintech.pe.core.service.agreement.db.payment_schedule.entity.EntitySchedulePayment;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import java.util.List;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final SchedulePaymentRepository schedulePaymentRepository;
 
     public String add(Schedule schedule) {
         return scheduleRepository.save(mapScheduleToEntity(schedule)).getId();
@@ -26,6 +29,27 @@ public class ScheduleService {
             schedules.add(mapEntityToSchedule(entitySchedule));
         }
         return schedules;
+    }
+
+    /**
+     * Получает {@link Schedule} последней версии со всеми {@link SchedulePayment} остортированными по возрастанию
+     * периода платежа с определенными статусами
+     *
+     * @param agreementId id договора для которго нужно получить {@link SchedulePayment}
+     * @param statuses статусы платежей, которые нужно получить
+     */
+    public Schedule getStatusesPaymentsOrdered(String agreementId, List<PaymentStatus> statuses) {
+        EntitySchedule schedule = scheduleRepository.findFirstByAgreementIdOrderByVersionDesc(agreementId);
+        List<EntitySchedulePayment> schedulePayments = schedulePaymentRepository
+                .findByScheduleAndStatusInOrderByPeriodPayment(schedule, statuses);
+        schedule.setSchedulePayments(schedulePayments);
+        return mapEntityToSchedule(schedule);
+    }
+
+    public void saveAllSchedulePayments(Schedule schedule) {
+        List<EntitySchedulePayment> schedulePayments =
+                mapListSchedulePaymentToListEntity(schedule.schedulePayments(), mapScheduleToEntity(schedule));
+        schedulePaymentRepository.saveAll(schedulePayments);
     }
 
     private Schedule mapEntityToSchedule(EntitySchedule entitySchedule) {
@@ -59,6 +83,7 @@ public class ScheduleService {
 
     private EntitySchedule mapScheduleToEntity(Schedule schedule) {
         EntitySchedule entitySchedule = new EntitySchedule();
+        entitySchedule.setId(schedule.id());
         entitySchedule.setAgreementId(schedule.agreementId());
         entitySchedule.setVersion(schedule.version());
         entitySchedule.setSchedulePayments(mapListSchedulePaymentToListEntity(schedule.schedulePayments(),
@@ -79,12 +104,12 @@ public class ScheduleService {
                                                              EntitySchedule entitySchedule) {
         return EntitySchedulePayment.builder()
                 .schedule(entitySchedule)
-                .status(schedulePayment.status())
-                .paymentDate(schedulePayment.paymentDate())
-                .periodPayment(schedulePayment.periodPayment())
-                .interestPayment(schedulePayment.interestPayment())
-                .principalPayment(schedulePayment.principalPayment())
-                .periodNumber(schedulePayment.periodNumber())
+                .status(schedulePayment.getStatus())
+                .paymentDate(schedulePayment.getPaymentDate())
+                .periodPayment(schedulePayment.getPeriodPayment())
+                .interestPayment(schedulePayment.getInterestPayment())
+                .principalPayment(schedulePayment.getPrincipalPayment())
+                .periodNumber(schedulePayment.getPeriodNumber())
                 .build();
     }
 }

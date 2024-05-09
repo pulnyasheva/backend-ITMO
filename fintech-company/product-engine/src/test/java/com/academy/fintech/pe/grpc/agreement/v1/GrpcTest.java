@@ -16,11 +16,18 @@ import com.academy.fintech.overdue_payment.OverduePaymentServiceGrpc;
 import com.academy.fintech.pe.Container;
 import com.academy.fintech.pe.core.db.agreement.AgreementServiceTest;
 import com.academy.fintech.pe.core.db.agreement.entity.EntityAgreementTest;
+import com.academy.fintech.pe.core.db.balance.BalanceServiceTest;
+import com.academy.fintech.pe.core.db.balance.entity.CompositeKeyTest;
+import com.academy.fintech.pe.core.db.balance.entity.EntityBalanceTest;
 import com.academy.fintech.pe.core.db.schedule.ScheduleServiceTest;
 import com.academy.fintech.pe.core.db.schedule.entity.EntitySchedulePaymentTest;
 import com.academy.fintech.pe.core.db.schedule.entity.EntityScheduleTest;
 import com.academy.fintech.pe.core.service.agreement.AgreementStatus;
+import com.academy.fintech.pe.core.service.agreement.BalanceType;
 import com.academy.fintech.pe.core.service.agreement.PaymentStatus;
+import com.academy.fintech.processing.ProcessingRequest;
+import com.academy.fintech.processing.ProcessingResponse;
+import com.academy.fintech.processing.ProcessingServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.junit.jupiter.api.Assertions;
@@ -48,10 +55,13 @@ public final class GrpcTest {
     private static DisbursementServiceGrpc.DisbursementServiceBlockingStub grpcServiceDisbursement;
     private static CreateScheduleServiceGrpc.CreateScheduleServiceBlockingStub grpcServiceCreateSchedule;
     private static OverduePaymentServiceGrpc.OverduePaymentServiceBlockingStub grpcServiceOverduePayment;
+    private static ProcessingServiceGrpc.ProcessingServiceBlockingStub grpcServiceProcessing;
     @Autowired
     private AgreementServiceTest agreementService;
     @Autowired
     private ScheduleServiceTest scheduleService;
+    @Autowired
+    private BalanceServiceTest balanceService;
 
     @BeforeAll
     public static void AgreementManagementTest() {
@@ -61,6 +71,7 @@ public final class GrpcTest {
         grpcServiceDisbursement = DisbursementServiceGrpc.newBlockingStub(channel);
         grpcServiceCreateSchedule = CreateScheduleServiceGrpc.newBlockingStub(channel);
         grpcServiceOverduePayment = OverduePaymentServiceGrpc.newBlockingStub(channel);
+        grpcServiceProcessing = ProcessingServiceGrpc.newBlockingStub(channel);
     }
 
     @Test
@@ -309,6 +320,42 @@ public final class GrpcTest {
 
         Assertions.assertNotNull(response);
         Assertions.assertTrue(equalsLists(expectedDates, dates));
+    }
+
+    @Test
+    public void processingTest() {
+        String agreementId = "agreement";
+        EntityAgreementTest agreement = EntityAgreementTest.builder()
+                .clientId("clientTest")
+                .id(agreementId)
+                .build();
+
+        agreementService.add(agreement);
+
+        EntityBalanceTest balance = EntityBalanceTest.builder()
+                .agreementId(agreementId)
+                .amount(new BigDecimal(0))
+                .type(BalanceType.CLIENT)
+                .build();
+
+        balanceService.add(balance);
+
+        ProcessingRequest request = ProcessingRequest.newBuilder()
+                .setAgreementId(agreementId)
+                .setAmountPayment(20000)
+                .build();
+
+        ProcessingResponse response = grpcServiceProcessing.processing(request);
+
+        Assertions.assertFalse(response.hasErrorMessage());
+
+        Optional<EntityBalanceTest> modifiedBalance = balanceService.get(CompositeKeyTest.builder()
+                .agreementId(agreementId)
+                .type(BalanceType.CLIENT)
+                .build());
+
+        Assertions.assertTrue(modifiedBalance.isPresent());
+        Assertions.assertEquals(new BigDecimal(20000), modifiedBalance.get().getAmount());
     }
 
     private boolean equalsLists(List<LocalDate> list1, List<LocalDate> list2) {

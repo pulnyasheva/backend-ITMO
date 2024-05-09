@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Setter
@@ -49,4 +51,7 @@ public class EntityApplication {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private ApplicationStatus status;
+
+    @Column(name = "updated_at")
+    private LocalDate updatedAt;
 }

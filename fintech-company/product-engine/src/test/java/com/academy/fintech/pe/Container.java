@@ -34,7 +34,7 @@ public class Container implements Extension {
     public static final ApplicationContainer applicationContainer = new ApplicationContainer()
             .withNetwork(network)
             .withNetworkAliases("app")
-            .withEnv("DB_URL", "jdbc:postgresql://@postgres:5433/test-db")
+            .withEnv("DB_URL", "jdbc:postgresql://host.docker.internal:5433/test-db")
             .withEnv("DB_PASSWORD", postgres.getPassword())
             .withEnv("DB_USERNAME", "test")
             .withEnv("SERVER_PORT", "8081")

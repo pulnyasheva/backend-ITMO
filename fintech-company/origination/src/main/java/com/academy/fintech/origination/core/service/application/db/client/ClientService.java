@@ -35,6 +35,11 @@ public class ClientService {
         return client.map(this::mapEntityToClient);
     }
 
+    public Optional<String> getEmail(String clientId) {
+        Optional<EntityClient> client = clientRepository.findById(clientId);
+        return client.map(entityClient -> mapEntityToClient(entityClient).email());
+    }
+
     private EntityClient mapClientToEntity(Client client) {
         return EntityClient.builder()
                 .firstName(client.firstName())

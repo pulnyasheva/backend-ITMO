@@ -15,4 +15,5 @@
 - "id" - идентификатор заявки (тип данных: VARCHAR, primary key)
 - "client_id" - идентификатор клиента, который подал заявку (тип данных: VARCHAR, foreign key, ссылается на поле "id" таблицы "client")
 - "requested_disbursement_amount" - запрашиваемая сумма кредита (тип данных: INT)
-- "status" - статус заявки (тип данных: VARCHARб допустимые значения: "NEW", "SCORING", "ACCEPTED", "ACTIVE", "CLOSED")
+- "status" - статус заявки (тип данных: VARCHAR допустимые значения: "NEW", "SCORING", "ACCEPTED", "ACTIVE", "CLOSED")
+- "update_at" - последнее время обновления статуса заявки (тип данных: DATE)

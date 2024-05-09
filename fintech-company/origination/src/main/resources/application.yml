@@ -30,3 +30,28 @@ origination:
       grpc:
         host: localhost
         port: 9092
+
+product-engine:
+  client:
+    creation:
+      grpc:
+        host: localhost
+        port: 9090
+    disbursement:
+      grpc:
+        host: localhost
+        port: 9090
+
+payment-gate:
+  client:
+    disbursement:
+      grpc:
+        host: localhost
+        port: 9096
+
+exporter:
+  client:
+    export:
+      grpc:
+        host: localhost
+        port: 9097

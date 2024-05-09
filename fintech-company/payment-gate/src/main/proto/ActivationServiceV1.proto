@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package com.academy.fintech.create_agreement;
+
+option java_multiple_files = true;
+
+service ActivationService {
+  rpc activate (ActivationRequest) returns (ActivationResponse);
+}
+
+message ActivationRequest {
+  string agreementId = 1;
+  Date disbursementDate = 2;
+}
+
+message ActivationResponse {
+  bool successfully = 1;
+}
+
+message Date{
+  int32 day = 1;
+  int32 month = 2;
+  int32 year = 3;
+}
